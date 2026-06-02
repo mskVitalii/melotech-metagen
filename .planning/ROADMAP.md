@@ -14,7 +14,7 @@ The pipeline is built bottom-up: backend infrastructure and LLM integration firs
 Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Core Backend Infrastructure** - NestJS foundation, Prisma schema, LLM integration, Redis caching and rate limiting, Railway deployment config
-- [ ] **Phase 2: Generation Pipeline** - MusicConcept generation, platform processors (Spotify/TikTok/YouTube), GenerationService fan-out, persistence
+- [x] **Phase 2: Generation Pipeline** - MusicConcept generation, platform processors (Spotify/TikTok/YouTube), GenerationService fan-out, persistence
 - [ ] **Phase 3: History & Query Layer** - GET /history endpoint with pagination and platform filter
 - [ ] **Phase 4: Frontend** - Next.js App Router UI: prompt form, platform selector, comparison view, history view
 
@@ -64,11 +64,11 @@ Plans:
 Plans:
 **Wave 1**
 
-- [ ] 02-01-PLAN.md — PlatformProcessor interface + PLATFORM_PROCESSOR token, per-platform output types, Spotify/TikTok/YouTube processors with buildFallback, PlatformRegistry (multi-provider) + unit tests
+- [x] 02-01-PLAN.md — PlatformProcessor interface + PLATFORM_PROCESSOR token, per-platform output types, Spotify/TikTok/YouTube processors with buildFallback, PlatformRegistry (multi-provider) + unit tests
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-- [ ] 02-02-PLAN.md — GenerateRequestDto, PersistenceService (two-table $transaction), GenerationService orchestration (cache → LLM → fan-out → fallback → persist → cache write), GenerationController, GenerationModule + AppModule wiring
+- [x] 02-02-PLAN.md — GenerateRequestDto, PersistenceService (two-table $transaction), GenerationService orchestration (cache → LLM → fan-out → fallback → persist → cache write), GenerationController, GenerationModule + AppModule wiring
 
 ### Phase 3: History & Query Layer
 
@@ -118,6 +118,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Core Backend Infrastructure | 3/3 | Complete    | 2026-06-02 |
-| 2. Generation Pipeline | 0/2 | Not started | - |
+| 2. Generation Pipeline | 2/2 | Complete    | 2026-06-02 |
 | 3. History & Query Layer | 0/1 | Not started | - |
 | 4. Frontend | 0/2 | Not started | - |
