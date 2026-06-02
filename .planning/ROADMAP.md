@@ -59,12 +59,16 @@ Plans:
   4. Each generation request is stored in `generation_requests`; each platform result is a separate row in `generation_results`
   5. `PlatformRegistry` resolves processors by name; a new platform can be added by registering one new class — no changes to `GenerationService` or existing processors
 
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
+**Wave 1**
 
-- [ ] 02-01: PlatformProcessor interface, PlatformRegistry (multi-provider token), SpotifyProcessor, TikTokProcessor, YouTubeProcessor
-- [ ] 02-02: GenerationService (cache check → MusicConcept generation → Promise.allSettled fan-out → fallback reconstruction → persist → cache write) + GenerationController + PersistenceService (two-table write)
+- [ ] 02-01-PLAN.md — PlatformProcessor interface + PLATFORM_PROCESSOR token, per-platform output types, Spotify/TikTok/YouTube processors with buildFallback, PlatformRegistry (multi-provider) + unit tests
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
+- [ ] 02-02-PLAN.md — GenerateRequestDto, PersistenceService (two-table $transaction), GenerationService orchestration (cache → LLM → fan-out → fallback → persist → cache write), GenerationController, GenerationModule + AppModule wiring
 
 ### Phase 3: History & Query Layer
 
