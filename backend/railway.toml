@@ -1,0 +1,18 @@
+# backend/railway.toml — D-19, D-21
+# Railway build and deployment configuration for the NestJS backend service.
+#
+# Notes:
+#   - Railway service root directory must be set to /backend in the Railway dashboard
+#   - Environment variables (D-20) are set in the Railway dashboard, not here:
+#       DATABASE_URL, REDIS_URL, OPENAI_API_KEY, OPENAI_MODEL, PORT, NODE_ENV, FRONTEND_URL
+#   - prisma generate runs automatically via "postinstall": "prisma generate" in package.json
+#     (fires after npm install during Railway build)
+
+[build]
+buildCommand = "npm run build"
+
+[deploy]
+startCommand = "npx prisma migrate deploy && node dist/main.js"
+healthcheckPath = "/health"
+healthcheckTimeout = 30
+restartPolicyType = "ALWAYS"

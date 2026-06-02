@@ -1,0 +1,36 @@
+// Prisma 7 schema — D-10, D-11
+// Generator: provider = "prisma-client" (Prisma 7 renamed provider — use this, not the legacy v6 name)
+// output is REQUIRED in Prisma 7 and must be specified explicitly
+// Import path after generation: import { PrismaClient } from '../generated/prisma/client'
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// D-11: GenerationRequest model — maps to generation_requests table
+model GenerationRequest {
+  id        String             @id @default(cuid())
+  prompt    String
+  createdAt DateTime           @default(now()) @map("created_at")
+  results   GenerationResult[]
+
+  @@map("generation_requests")
+}
+
+// D-11: GenerationResult model — maps to generation_results table
+// payload uses Json type (maps to jsonb in PostgreSQL)
+model GenerationResult {
+  id        String            @id @default(cuid())
+  requestId String            @map("request_id")
+  platform  String
+  payload   Json              @map("payload_json")
+  createdAt DateTime          @default(now()) @map("created_at")
+  request   GenerationRequest @relation(fields: [requestId], references: [id])
+
+  @@map("generation_results")
+}
