@@ -5,13 +5,18 @@ import { PrismaService } from '../prisma/prisma.service.js';
 
 describe('PersistenceService', () => {
   let service: PersistenceService;
-  let prisma: { $transaction: ReturnType<typeof jest.fn> };
-  let txRequestCreate: ReturnType<typeof jest.fn>;
-  let txResultCreate: ReturnType<typeof jest.fn>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let prisma: { $transaction: jest.Mock<any> };
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let txRequestCreate: jest.Mock<any>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let txResultCreate: jest.Mock<any>;
 
   beforeEach(async () => {
-    txRequestCreate = jest.fn().mockResolvedValue({ id: 'req_1' });
-    txResultCreate = jest.fn().mockResolvedValue({});
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    txRequestCreate = jest.fn<() => Promise<any>>().mockResolvedValue({ id: 'req_1' });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    txResultCreate = jest.fn<() => Promise<any>>().mockResolvedValue({});
 
     const txMock = {
       generationRequest: { create: txRequestCreate },
@@ -20,7 +25,9 @@ describe('PersistenceService', () => {
 
     prisma = {
       // D-15: $transaction invokes the callback with txMock
-      $transaction: jest.fn((cb: (tx: typeof txMock) => Promise<unknown>) => cb(txMock)),
+      $transaction: jest.fn().mockImplementation((cb: unknown) =>
+        (cb as (tx: typeof txMock) => Promise<unknown>)(txMock)
+      ),
     };
 
     const module = await Test.createTestingModule({

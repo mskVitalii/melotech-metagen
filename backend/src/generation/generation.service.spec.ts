@@ -34,32 +34,50 @@ const fixtureTikTokOutput: PlatformOutput = {
 
 describe('GenerationService', () => {
   let service: GenerationService;
-  let cacheGet: ReturnType<typeof jest.fn>;
-  let cacheSet: ReturnType<typeof jest.fn>;
-  let llmGenerateStructured: ReturnType<typeof jest.fn>;
-  let registryGetProcessors: ReturnType<typeof jest.fn>;
-  let persistenceServicePersist: ReturnType<typeof jest.fn>;
+  // Type mocks as generic callable returning unknown to avoid 'never' inference in jest types
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let cacheGet: jest.Mock<any>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let cacheSet: jest.Mock<any>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let llmGenerateStructured: jest.Mock<any>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let registryGetProcessors: jest.Mock<any>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let persistenceServicePersist: jest.Mock<any>;
 
-  // Fake processor that fulfills
-  const fakeSpotifyProcessor: PlatformProcessor = {
-    platform: 'spotify',
-    generate: jest.fn().mockResolvedValue(fixtureSpotifyOutput) as PlatformProcessor['generate'],
-    buildFallback: jest.fn().mockReturnValue(fixtureSpotifyOutput) as PlatformProcessor['buildFallback'],
-  };
-
-  // Fake processor that rejects
-  const fakeTikTokProcessor: PlatformProcessor = {
-    platform: 'tiktok',
-    generate: jest.fn().mockRejectedValue(new Error('processor error')) as PlatformProcessor['generate'],
-    buildFallback: jest.fn().mockReturnValue(fixtureTikTokOutput) as PlatformProcessor['buildFallback'],
-  };
+  // Fake processors built fresh in beforeEach to avoid module-level type inference issues
+  let fakeSpotifyProcessor: PlatformProcessor;
+  let fakeTikTokProcessor: PlatformProcessor;
 
   beforeEach(async () => {
-    cacheGet = jest.fn().mockResolvedValue(undefined); // Default: cache miss
-    cacheSet = jest.fn().mockResolvedValue(undefined);
-    llmGenerateStructured = jest.fn().mockResolvedValue(fixtureConcept);
-    registryGetProcessors = jest.fn().mockReturnValue([fakeSpotifyProcessor]);
-    persistenceServicePersist = jest.fn().mockResolvedValue('req_db');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    cacheGet = jest.fn<() => Promise<any>>().mockResolvedValue(undefined); // Default: cache miss
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    cacheSet = jest.fn<() => Promise<any>>().mockResolvedValue(undefined);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    llmGenerateStructured = jest.fn<() => Promise<any>>().mockResolvedValue(fixtureConcept);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    persistenceServicePersist = jest.fn<() => Promise<any>>().mockResolvedValue('req_db');
+
+    // Fake processor that fulfills
+    fakeSpotifyProcessor = {
+      platform: 'spotify',
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      generate: jest.fn<() => Promise<any>>().mockResolvedValue(fixtureSpotifyOutput) as unknown as PlatformProcessor['generate'],
+      buildFallback: jest.fn().mockReturnValue(fixtureSpotifyOutput) as unknown as PlatformProcessor['buildFallback'],
+    };
+
+    // Fake processor that rejects
+    fakeTikTokProcessor = {
+      platform: 'tiktok',
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      generate: jest.fn<() => Promise<any>>().mockRejectedValue(new Error('processor error')) as unknown as PlatformProcessor['generate'],
+      buildFallback: jest.fn().mockReturnValue(fixtureTikTokOutput) as unknown as PlatformProcessor['buildFallback'],
+    };
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    registryGetProcessors = jest.fn<() => any>().mockReturnValue([fakeSpotifyProcessor]);
 
     const module = await Test.createTestingModule({
       providers: [
@@ -107,7 +125,7 @@ describe('GenerationService', () => {
       const cachedResponse = { requestId: 'cached_id', results: {} };
       cacheGet.mockResolvedValue(cachedResponse);
 
-      // spotify + tiktok in one order
+      // tiktok + spotify in one order
       await service.generate({ prompt: 'test', targetPlatforms: ['tiktok', 'spotify'] });
       const keyForReversed = (cacheGet.mock.calls[0] as string[])[0];
 

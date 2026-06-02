@@ -9,6 +9,7 @@ import { RateProbeController } from './health/rate-probe.controller.js';
 import { LLMModule } from './llm/llm.module.js';
 import { ThrottlerModule } from './throttler/throttler.module.js';
 import { CacheModule } from './cache/cache.module.js';
+import { GenerationModule } from './generation/generation.module.js';
 
 @Module({
   imports: [
@@ -20,6 +21,8 @@ import { CacheModule } from './cache/cache.module.js';
     LLMModule,
     ThrottlerModule,
     CacheModule,
+    // D-21: GenerationModule registered in AppModule (API-01)
+    GenerationModule,
   ],
   controllers: [HealthController, RateProbeController],
   providers: [

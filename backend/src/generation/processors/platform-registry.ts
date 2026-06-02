@@ -12,7 +12,9 @@ export class PlatformRegistry {
     @Inject(PLATFORM_PROCESSOR) processors: PlatformProcessor[],
   ) {
     // D-02: Build Map<string, PlatformProcessor> keyed by processor.platform
-    this.processorMap = new Map(processors.map(p => [p.platform, p]));
+    // Guard: NestJS multi-provider injects an array, but normalize defensively
+    const list = Array.isArray(processors) ? processors : processors ? [processors as PlatformProcessor] : [];
+    this.processorMap = new Map(list.map(p => [p.platform, p]));
   }
 
   // Returns processors matching the given platform names.
