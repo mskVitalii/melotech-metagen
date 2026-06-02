@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: executing
-stopped_at: Phase 01 complete — all 3 plans done; next is Phase 02 (Generation Pipeline)
-last_updated: "2026-06-02T18:30:00Z"
-last_activity: 2026-06-02 -- Plan 01-03 complete (ThrottlerModule + ThrottlerExceptionFilter + CacheModule + RateProbeController); 2 tasks, 3 commits
+status: completed
+stopped_at: Phase 01 complete (all 3 plans done)
+last_updated: "2026-06-02T19:47:43.155Z"
+last_activity: 2026-06-02
 progress:
   total_phases: 4
   completed_phases: 1
   total_plans: 3
   completed_plans: 3
-  percent: 100
+  percent: 25
 ---
 
 # Project State
@@ -25,10 +25,10 @@ See: .planning/PROJECT.md (updated 2026-06-02)
 
 ## Current Position
 
-Phase: 01 (core-backend-infrastructure) — COMPLETE
-Plan: 3 of 3 (01-03 complete — all Phase 1 plans done)
+Phase: 2
+Plan: Not started
 Status: PHASE COMPLETE — ready to start Phase 02 (Generation Pipeline)
-Last activity: 2026-06-02 -- Plan 01-03 complete: Redis-backed ThrottlerModule (3/60s/IP, proxy-aware), ThrottlerExceptionFilter (exact D-18 429 body + Retry-After header), dual-store CacheModule (L1 memory + L2 Redis, 1h TTL), RateProbeController (POST /rate-probe)
+Last activity: 2026-06-02
 
 Progress: [██████████] 100% (3/3 plans complete in Phase 1)
 
@@ -36,7 +36,7 @@ Progress: [██████████] 100% (3/3 plans complete in Phase 1)
 
 **Velocity:**
 
-- Total plans completed: 3 (all Phase 1)
+- Total plans completed: 6 (all Phase 1)
 - Average duration: ~40 minutes
 - Total execution time: ~120 minutes (01-01 ~40min, 01-02 ~50min, 01-03 ~30min)
 
@@ -45,6 +45,7 @@ Progress: [██████████] 100% (3/3 plans complete in Phase 1)
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 01-core-backend-infrastructure | 3/3 | ~120 min | ~40 min |
+| 1 | 3 | - | - |
 
 **Recent Trend:**
 

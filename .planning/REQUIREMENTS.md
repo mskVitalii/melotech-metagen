@@ -10,12 +10,12 @@
 - [ ] **API-01**: User can POST /generate with `{ prompt, targetPlatforms }` and receive `{ requestId, results }` with platform-keyed outputs
 - [ ] **API-02**: User can GET /history to retrieve a paginated list of previous generation requests with their results
 - [ ] **API-03**: User can filter history by platform via GET /history?platform=spotify|tiktok|youtube
-- [ ] **API-04**: Server returns HTTP 429 with appropriate message when rate limit is exceeded
+- [x] **API-04**: Server returns HTTP 429 with appropriate message when rate limit is exceeded
 
 ### Pipeline
 
 - [ ] **PIPE-01**: System generates a canonical MusicConcept (title, genre, mood, BPM, instruments, description) from the user's prompt via the LLM provider
-- [ ] **PIPE-02**: LLM communication is abstracted behind a `LLMProvider` interface with `generateStructured<T>(prompt)` — platform processors never call vendor SDKs directly
+- [x] **PIPE-02**: LLM communication is abstracted behind a `LLMProvider` interface with `generateStructured<T>(prompt)` — platform processors never call vendor SDKs directly
 - [ ] **PIPE-03**: Platform processors run in parallel using `Promise.allSettled` so one failure does not block other platforms
 - [ ] **PIPE-04**: If a platform processor fails, the system reconstructs output from MusicConcept and includes `"fallback": true` in that platform's response; other platforms return normally
 - [ ] **PIPE-05**: `GenerationService` orchestrates: receive request → generate MusicConcept → resolve processors → run in parallel → persist → return response
@@ -36,8 +36,8 @@
 
 ### Rate Limiting
 
-- [ ] **RATE-01**: Maximum 3 generation requests per minute per client IP; excess requests receive HTTP 429
-- [ ] **RATE-02**: Rate limiting is Redis-backed to survive server restarts; the Railway reverse-proxy `trust proxy` setting is configured so client IP is correctly extracted from `X-Forwarded-For`
+- [x] **RATE-01**: Maximum 3 generation requests per minute per client IP; excess requests receive HTTP 429
+- [x] **RATE-02**: Rate limiting is Redis-backed to survive server restarts; the Railway reverse-proxy `trust proxy` setting is configured so client IP is correctly extracted from `X-Forwarded-For`
 
 ### Persistence
 
@@ -98,9 +98,9 @@
 | API-01 | Phase 2 | Pending |
 | API-02 | Phase 3 | Pending |
 | API-03 | Phase 3 | Pending |
-| API-04 | Phase 1 | Pending |
+| API-04 | Phase 1 | Complete |
 | PIPE-01 | Phase 2 | Pending |
-| PIPE-02 | Phase 1 | Pending |
+| PIPE-02 | Phase 1 | Complete |
 | PIPE-03 | Phase 2 | Pending |
 | PIPE-04 | Phase 2 | Pending |
 | PIPE-05 | Phase 2 | Pending |
@@ -112,8 +112,8 @@
 | CACHE-01 | Phase 2 | Pending |
 | CACHE-02 | Phase 2 | Pending |
 | CACHE-03 | Phase 2 | Pending |
-| RATE-01 | Phase 1 | Pending |
-| RATE-02 | Phase 1 | Pending |
+| RATE-01 | Phase 1 | Complete |
+| RATE-02 | Phase 1 | Complete |
 | PERSIST-01 | Phase 2 | Pending |
 | PERSIST-02 | Phase 2 | Pending |
 | PERSIST-03 | Phase 3 | Pending |
@@ -128,6 +128,7 @@
 | DOC-01 | Phase 4 | Pending |
 
 **Coverage:**
+
 - v1 requirements: 31 total
 - Mapped to phases: 31
 - Unmapped: 0 ✓
