@@ -2,15 +2,17 @@ services:
   postgres:
     image: postgres:16-alpine
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: melotech
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    networks:
+      - melotech
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -21,6 +23,8 @@ services:
       - "6379:6379"
     volumes:
       - redis_data:/data
+    networks:
+      - melotech
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 5s
@@ -32,23 +36,24 @@ services:
       context: ./backend
       target: dev
     ports:
-      - "3001:3001"
-    environment:
-      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/melotech
-      REDIS_URL: redis://redis:6379
-      OPENAI_API_KEY: ${OPENAI_API_KEY}
-      OPENAI_MODEL: ${OPENAI_MODEL:-gpt-4o-2024-08-06}
-      PORT: 3001
-      NODE_ENV: development
+      - "${PORT}:${PORT}"
+    env_file:
+      - .env
     volumes:
       - ./backend:/app
       - /app/node_modules
       - /app/src/generated
+    networks:
+      - melotech
     depends_on:
       postgres:
         condition: service_healthy
       redis:
         condition: service_healthy
+
+networks:
+  melotech:
+    driver: bridge
 
 volumes:
   postgres_data:
