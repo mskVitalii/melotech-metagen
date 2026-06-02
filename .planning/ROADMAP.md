@@ -30,12 +30,12 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. Redis is connected; rate limit counters survive a server restart
   4. Prisma migrations run at deploy time; the `generation_requests` and `generation_results` tables exist in the Railway PostgreSQL instance
   5. The NestJS app boots on Railway with correct `trust proxy` config so `X-Forwarded-For` yields the real client IP
-**Plans**: TBD
+**Plans**: 3 plans
 
 Plans:
-- [ ] 01-01: NestJS project setup, Prisma schema, Railway deployment config (boot, migrations, trust proxy)
-- [ ] 01-02: LLMProvider abstraction + OpenAIProvider with structured output, refusal handling, and timeout config
-- [ ] 01-03: Redis CacheModule (two-store) + ThrottlerModule (Redis-backed, proxy-aware) + rate limit guard
+- [ ] 01-01-PLAN.md — Walking Skeleton: NestJS scaffold, Prisma 7 schema + migration, /health, Railway config (boot, migrate deploy, trust proxy)
+- [ ] 01-02-PLAN.md — LLMProvider abstraction + OpenAIProvider (structured output, refusal guard, timeout) + MusicConcept schema
+- [ ] 01-03-PLAN.md — Dual-store Redis CacheModule + Redis-backed ThrottlerModule (proxy-aware) + custom 429 filter
 
 ### Phase 2: Generation Pipeline
 **Goal**: A single POST /generate call produces platform-specific content for all requested platforms, persists the results, returns cached results for repeated requests, and degrades gracefully when one processor fails
