@@ -38,11 +38,11 @@ Decimal phases appear between their surrounding integers in numeric order.
 Plans:
 **Wave 1**
 
-- [ ] 01-01-PLAN.md — Walking Skeleton: NestJS scaffold, Prisma 7 schema + migration, /health, Railway config (boot, migrate deploy, trust proxy)
+- [x] 01-01-PLAN.md — Walking Skeleton: NestJS scaffold, Prisma 7 schema + migration, /health, Railway config (boot, migrate deploy, trust proxy)
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-- [ ] 01-02-PLAN.md — LLMProvider abstraction + OpenAIProvider (structured output, refusal guard, timeout) + MusicConcept schema
+- [x] 01-02-PLAN.md — LLMProvider abstraction + OpenAIProvider (structured output, refusal guard, timeout) + MusicConcept schema
 - [ ] 01-03-PLAN.md — Dual-store Redis CacheModule + Redis-backed ThrottlerModule (proxy-aware) + custom 429 filter
 
 ### Phase 2: Generation Pipeline
@@ -113,7 +113,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Core Backend Infrastructure | 0/3 | In Progress — 01-01 tasks 1+2 done; Task 3 blocked on PostgreSQL | - |
+| 1. Core Backend Infrastructure | 1/3 | In Progress — 01-01 and 01-02 complete; 01-03 next | - |
 | 2. Generation Pipeline | 0/2 | Not started | - |
 | 3. History & Query Layer | 0/1 | Not started | - |
 | 4. Frontend | 0/2 | Not started | - |
