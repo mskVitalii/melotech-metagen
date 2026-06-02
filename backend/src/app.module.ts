@@ -8,6 +8,7 @@ import { HealthController } from './health/health.controller';
 import { RateProbeController } from './health/rate-probe.controller';
 import { LLMModule } from './llm/llm.module';
 import { ThrottlerModule } from './throttler/throttler.module';
+import { CacheModule } from './cache/cache.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { ThrottlerModule } from './throttler/throttler.module';
     PrismaModule,
     LLMModule,
     ThrottlerModule,
+    CacheModule,
   ],
   controllers: [HealthController, RateProbeController],
   providers: [
