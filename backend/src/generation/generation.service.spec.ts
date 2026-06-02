@@ -56,28 +56,50 @@ describe('GenerationService', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     cacheSet = jest.fn<() => Promise<any>>().mockResolvedValue(undefined);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    llmGenerateStructured = jest.fn<() => Promise<any>>().mockResolvedValue(fixtureConcept);
+    llmGenerateStructured = jest
+      .fn<() => Promise<any>>()
+      .mockResolvedValue(fixtureConcept);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    persistenceServicePersist = jest.fn<() => Promise<any>>().mockResolvedValue('req_db');
+    persistenceServicePersist = jest
+      .fn<() => Promise<any>>()
+      .mockResolvedValue('req_db');
 
     // Fake processor that fulfills
     fakeSpotifyProcessor = {
       platform: 'spotify',
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      generate: jest.fn<() => Promise<any>>().mockResolvedValue(fixtureSpotifyOutput) as unknown as PlatformProcessor['generate'],
-      buildFallback: jest.fn().mockReturnValue(fixtureSpotifyOutput) as unknown as PlatformProcessor['buildFallback'],
+      generate: jest
+        .fn<() => Promise<any>>()
+        .mockResolvedValue(
+          fixtureSpotifyOutput,
+        ) as unknown as PlatformProcessor['generate'],
+      buildFallback: jest
+        .fn()
+        .mockReturnValue(
+          fixtureSpotifyOutput,
+        ) as unknown as PlatformProcessor['buildFallback'],
     };
 
     // Fake processor that rejects
     fakeTikTokProcessor = {
       platform: 'tiktok',
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      generate: jest.fn<() => Promise<any>>().mockRejectedValue(new Error('processor error')) as unknown as PlatformProcessor['generate'],
-      buildFallback: jest.fn().mockReturnValue(fixtureTikTokOutput) as unknown as PlatformProcessor['buildFallback'],
+      generate: jest
+        .fn<() => Promise<any>>()
+        .mockRejectedValue(
+          new Error('processor error'),
+        ) as unknown as PlatformProcessor['generate'],
+      buildFallback: jest
+        .fn()
+        .mockReturnValue(
+          fixtureTikTokOutput,
+        ) as unknown as PlatformProcessor['buildFallback'],
     };
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    registryGetProcessors = jest.fn<() => any>().mockReturnValue([fakeSpotifyProcessor]);
+    registryGetProcessors = jest
+      .fn<() => any>()
+      .mockReturnValue([fakeSpotifyProcessor]);
 
     const module = await Test.createTestingModule({
       providers: [
@@ -110,10 +132,16 @@ describe('GenerationService', () => {
 
   describe('cache hit', () => {
     it('returns cached response and does NOT call the LLM', async () => {
-      const cachedResponse = { requestId: 'cached_id', results: { spotify: fixtureSpotifyOutput } };
+      const cachedResponse = {
+        requestId: 'cached_id',
+        results: { spotify: fixtureSpotifyOutput },
+      };
       cacheGet.mockResolvedValue(cachedResponse);
 
-      const result = await service.generate({ prompt: 'test prompt', targetPlatforms: ['spotify'] });
+      const result = await service.generate({
+        prompt: 'test prompt',
+        targetPlatforms: ['spotify'],
+      });
 
       expect(result).toEqual(cachedResponse);
       expect(llmGenerateStructured).not.toHaveBeenCalled();
@@ -126,12 +154,18 @@ describe('GenerationService', () => {
       cacheGet.mockResolvedValue(cachedResponse);
 
       // tiktok + spotify in one order
-      await service.generate({ prompt: 'test', targetPlatforms: ['tiktok', 'spotify'] });
+      await service.generate({
+        prompt: 'test',
+        targetPlatforms: ['tiktok', 'spotify'],
+      });
       const keyForReversed = (cacheGet.mock.calls[0] as string[])[0];
 
       cacheGet.mockResolvedValue(cachedResponse);
       // spotify + tiktok in the other order — should produce same key
-      await service.generate({ prompt: 'test', targetPlatforms: ['spotify', 'tiktok'] });
+      await service.generate({
+        prompt: 'test',
+        targetPlatforms: ['spotify', 'tiktok'],
+      });
       const keyForNormal = (cacheGet.mock.calls[1] as string[])[0];
 
       expect(keyForReversed).toBe(keyForNormal);
@@ -140,28 +174,46 @@ describe('GenerationService', () => {
 
   describe('cache miss happy path', () => {
     it('calls LLM once on cache miss', async () => {
-      await service.generate({ prompt: 'test prompt', targetPlatforms: ['spotify'] });
+      await service.generate({
+        prompt: 'test prompt',
+        targetPlatforms: ['spotify'],
+      });
       expect(llmGenerateStructured).toHaveBeenCalledTimes(1);
     });
 
     it('returns one result per platform', async () => {
-      const result = await service.generate({ prompt: 'test prompt', targetPlatforms: ['spotify'] });
+      const result = await service.generate({
+        prompt: 'test prompt',
+        targetPlatforms: ['spotify'],
+      });
       expect(result.results).toHaveProperty('spotify');
     });
 
     it('calls persist with the prompt and results', async () => {
-      await service.generate({ prompt: 'test prompt', targetPlatforms: ['spotify'] });
+      await service.generate({
+        prompt: 'test prompt',
+        targetPlatforms: ['spotify'],
+      });
       expect(persistenceServicePersist).toHaveBeenCalledTimes(1);
-      expect(persistenceServicePersist).toHaveBeenCalledWith('test prompt', expect.any(Object));
+      expect(persistenceServicePersist).toHaveBeenCalledWith(
+        'test prompt',
+        expect.any(Object),
+      );
     });
 
     it('calls cache.set with the response after persisting', async () => {
-      await service.generate({ prompt: 'test prompt', targetPlatforms: ['spotify'] });
+      await service.generate({
+        prompt: 'test prompt',
+        targetPlatforms: ['spotify'],
+      });
       expect(cacheSet).toHaveBeenCalledTimes(1);
     });
 
     it('returns the requestId from PersistenceService', async () => {
-      const result = await service.generate({ prompt: 'test prompt', targetPlatforms: ['spotify'] });
+      const result = await service.generate({
+        prompt: 'test prompt',
+        targetPlatforms: ['spotify'],
+      });
       expect(result.requestId).toBe('req_db');
     });
   });
@@ -169,37 +221,59 @@ describe('GenerationService', () => {
   describe('partial failure (one processor rejects)', () => {
     beforeEach(() => {
       // Return both processors: spotify (fulfills) + tiktok (rejects)
-      registryGetProcessors.mockReturnValue([fakeSpotifyProcessor, fakeTikTokProcessor]);
+      registryGetProcessors.mockReturnValue([
+        fakeSpotifyProcessor,
+        fakeTikTokProcessor,
+      ]);
     });
 
     it('does not throw when one processor rejects', async () => {
       await expect(
-        service.generate({ prompt: 'test prompt', targetPlatforms: ['spotify', 'tiktok'] }),
+        service.generate({
+          prompt: 'test prompt',
+          targetPlatforms: ['spotify', 'tiktok'],
+        }),
       ).resolves.not.toThrow();
     });
 
     it('sets fallback:true on the rejected platform output', async () => {
-      const result = await service.generate({ prompt: 'test prompt', targetPlatforms: ['spotify', 'tiktok'] });
+      const result = await service.generate({
+        prompt: 'test prompt',
+        targetPlatforms: ['spotify', 'tiktok'],
+      });
       expect(result.results['tiktok']).toHaveProperty('fallback', true);
     });
 
     it('does NOT set fallback on the fulfilled platform output', async () => {
-      const result = await service.generate({ prompt: 'test prompt', targetPlatforms: ['spotify', 'tiktok'] });
+      const result = await service.generate({
+        prompt: 'test prompt',
+        targetPlatforms: ['spotify', 'tiktok'],
+      });
       expect(result.results['spotify']).not.toHaveProperty('fallback');
     });
 
     it('calls buildFallback on the failed processor with the concept', async () => {
-      await service.generate({ prompt: 'test prompt', targetPlatforms: ['spotify', 'tiktok'] });
-      expect(fakeTikTokProcessor.buildFallback).toHaveBeenCalledWith(fixtureConcept);
+      await service.generate({
+        prompt: 'test prompt',
+        targetPlatforms: ['spotify', 'tiktok'],
+      });
+      expect(fakeTikTokProcessor.buildFallback).toHaveBeenCalledWith(
+        fixtureConcept,
+      );
     });
   });
 
   describe('DB failure fallback', () => {
     it('uses crypto.randomUUID() requestId and does not throw when persist fails', async () => {
       persistenceServicePersist.mockRejectedValue(new Error('DB error'));
-      const result = await service.generate({ prompt: 'test prompt', targetPlatforms: ['spotify'] });
+      const result = await service.generate({
+        prompt: 'test prompt',
+        targetPlatforms: ['spotify'],
+      });
       // Should still return a response with a requestId (UUID format: 8-4-4-4-12)
-      expect(result.requestId).toMatch(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i);
+      expect(result.requestId).toMatch(
+        /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i,
+      );
     });
   });
 });

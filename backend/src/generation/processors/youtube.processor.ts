@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import type { MusicConcept } from '../types/music-concept.schema.js';
-import type { PlatformProcessor } from './platform-processor.interface.js';
 import type { YouTubeOutput } from '../types/platform-result.types.js';
+import type { PlatformProcessor } from './platform-processor.interface.js';
 
 // D-06: Pure transform of MusicConcept — no LLM call, no I/O (PIPE-02)
 @Injectable()
@@ -18,12 +18,12 @@ export class YouTubeProcessor implements PlatformProcessor {
     return [...concept.instruments, concept.genre, concept.mood];
   }
 
-  async generate(concept: MusicConcept): Promise<YouTubeOutput> {
-    return {
+  generate(concept: MusicConcept): Promise<YouTubeOutput> {
+    return Promise.resolve({
       title: this.buildTitle(concept),
       description: concept.description,
       tags: this.buildTags(concept),
-    };
+    });
   }
 
   // D-07: Instance method guaranteed never to throw

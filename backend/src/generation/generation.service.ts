@@ -1,14 +1,14 @@
-import { Injectable, Inject, Logger } from '@nestjs/common';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import type { Cache } from 'cache-manager';
 import { createHash, randomUUID } from 'node:crypto';
 import { LLMProvider } from '../llm/llm-provider.abstract.js';
-import { MusicConceptSchema } from './types/music-concept.schema.js';
-import type { MusicConcept } from './types/music-concept.schema.js';
-import { PlatformRegistry } from './processors/platform-registry.js';
 import { PersistenceService } from './persistence.service.js';
+import { PlatformRegistry } from './processors/platform-registry.js';
 import type { GenerateRequestDto } from './types/generate-request.dto.js';
 import type { GenerateResponseDto } from './types/generation-response.types.js';
+import type { MusicConcept } from './types/music-concept.schema.js';
+import { MusicConceptSchema } from './types/music-concept.schema.js';
 import type { PlatformOutput } from './types/platform-result.types.js';
 
 // D-11: Combined system + user prompt for LLM structured output
@@ -41,18 +41,23 @@ export class GenerationService {
     processors: Awaited<ReturnType<PlatformRegistry['getProcessors']>>,
     concept: MusicConcept,
   ): Promise<Record<string, PlatformOutput>> {
-    const settled = await Promise.allSettled(processors.map(p => p.generate(concept)));
+    const settled = await Promise.allSettled(
+      processors.map((p) => p.generate(concept)),
+    );
 
     const output: Record<string, PlatformOutput> = {};
     settled.forEach((result, index) => {
-      const processor = processors[index]!;
+      const processor = processors[index];
+      if (!processor) {
+        return;
+      }
       if (result.status === 'fulfilled') {
         output[processor.platform] = result.value;
       } else {
         // D-12: Fallback reconstruction on rejection; set fallback:true (PIPE-04)
         output[processor.platform] = {
           ...processor.buildFallback(concept),
-          fallback: true as const,
+          fallback: true,
         };
       }
     });
@@ -72,7 +77,41 @@ export class GenerationService {
 
     // STEP 2 (PIPE-01, D-11): LLM call on cache miss
     const userPrompt = buildUserPrompt(prompt);
-    const concept = await this.llmProvider.generateStructured(userPrompt, MusicConceptSchema);
+    let concept: MusicConcept;
+
+    try {
+      concept = await this.llmProvider.generateStructured(
+        userPrompt,
+        MusicConceptSchema,
+      );
+    } catch (error) {
+      this.logger.warn(
+        'LLM generation failed — attempting cached history fallback',
+      );
+
+      const cachedHistory =
+        await this.persistenceService.findLatestByPromptAndPlatforms(
+          prompt,
+          targetPlatforms,
+        );
+
+      if (cachedHistory) {
+        const response: GenerateResponseDto = {
+          requestId: cachedHistory.id,
+          results: Object.fromEntries(
+            cachedHistory.results.map((result) => [
+              result.platform,
+              result.payload as PlatformOutput,
+            ]),
+          ),
+        };
+
+        await this.cache.set(cacheKey, response);
+        return response;
+      }
+
+      throw error;
+    }
 
     // STEP 3 (PIPE-03, D-12): Parallel fan-out via registry — Promise.allSettled, fallback on rejection
     const processors = this.registry.getProcessors(targetPlatforms);

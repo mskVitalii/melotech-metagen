@@ -1,6 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ConfigService } from '@nestjs/config';
-import { BadRequestException, InternalServerErrorException } from '@nestjs/common';
+import {
+  BadRequestException,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { OpenAIProvider } from './openai.provider';
 import { MusicConceptSchema } from '../generation/types/music-concept.schema';
 
@@ -76,7 +79,10 @@ describe('OpenAIProvider', () => {
         ],
       });
 
-      const result = await provider.generateStructured('Generate a pop track', MusicConceptSchema);
+      const result = await provider.generateStructured(
+        'Generate a pop track',
+        MusicConceptSchema,
+      );
       expect(result).toEqual(validConcept);
     });
 
@@ -94,11 +100,17 @@ describe('OpenAIProvider', () => {
       });
 
       await expect(
-        provider.generateStructured('Generate explicit content', MusicConceptSchema),
+        provider.generateStructured(
+          'Generate explicit content',
+          MusicConceptSchema,
+        ),
       ).rejects.toThrow(BadRequestException);
 
       await expect(
-        provider.generateStructured('Generate explicit content', MusicConceptSchema),
+        provider.generateStructured(
+          'Generate explicit content',
+          MusicConceptSchema,
+        ),
       ).rejects.toThrow('Content policy refusal');
     });
 

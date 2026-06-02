@@ -1,4 +1,8 @@
-import { Injectable, BadRequestException, InternalServerErrorException } from '@nestjs/common';
+import {
+    BadRequestException,
+    Injectable,
+    InternalServerErrorException,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import OpenAI from 'openai';
 import { zodResponseFormat } from 'openai/helpers/zod';
@@ -18,7 +22,10 @@ export class OpenAIProvider extends LLMProvider {
     });
   }
 
-  async generateStructured<T>(prompt: string, schema: ZodSchema<T>): Promise<T> {
+  async generateStructured<T>(
+    prompt: string,
+    schema: ZodSchema<T>,
+  ): Promise<T> {
     const completion = await this.openai.chat.completions.parse({
       model: this.config.get<string>('OPENAI_MODEL', 'gpt-5.4'),
       messages: [{ role: 'user', content: prompt }],
@@ -37,6 +44,6 @@ export class OpenAIProvider extends LLMProvider {
       throw new InternalServerErrorException('LLM returned no parsed output');
     }
 
-    return message.parsed as T;
+    return message.parsed;
   }
 }

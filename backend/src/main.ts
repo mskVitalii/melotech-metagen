@@ -1,5 +1,5 @@
-import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
+import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module.js';
 import { ThrottlerExceptionFilter } from './throttler/throttler-exception.filter.js';
 
@@ -8,7 +8,10 @@ async function bootstrap() {
 
   // D-16: Trust Railway's load balancer for real client IP
   // Must be set BEFORE app.listen()
-  app.getHttpAdapter().getInstance().set('trust proxy', 1);
+  const httpServer = app.getHttpAdapter().getInstance() as {
+    set: (key: string, value: number) => void;
+  };
+  httpServer.set('trust proxy', 1);
 
   // CORS: allow FRONTEND_URL in prod, all origins in dev
   const frontendUrl = process.env.FRONTEND_URL;
@@ -29,4 +32,4 @@ async function bootstrap() {
 
   await app.listen(process.env.PORT ?? 3001);
 }
-bootstrap();
+void bootstrap();

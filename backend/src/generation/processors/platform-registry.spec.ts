@@ -99,8 +99,16 @@ describe('PlatformRegistry', () => {
     // The registry is constructed with the injected array — no hardcoded imports
     const customProcessor: PlatformProcessor = {
       platform: 'custom',
-      generate: async (_c: MusicConcept) => ({ title: 'custom', description: '', tags: [] }),
-      buildFallback: (_c: MusicConcept) => ({ title: 'custom', description: '', tags: [] }),
+      generate: async (_c: MusicConcept) => ({
+        title: 'custom',
+        description: '',
+        tags: [],
+      }),
+      buildFallback: (_c: MusicConcept) => ({
+        title: 'custom',
+        description: '',
+        tags: [],
+      }),
     };
     const customRegistry = new PlatformRegistry([customProcessor]);
     const result = customRegistry.getProcessors(['custom']);

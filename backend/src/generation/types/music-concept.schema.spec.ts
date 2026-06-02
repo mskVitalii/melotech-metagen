@@ -17,20 +17,30 @@ describe('MusicConceptSchema', () => {
   });
 
   it('throws when bpm is below min (40)', () => {
-    expect(() => MusicConceptSchema.parse({ ...validConcept, bpm: 30 })).toThrow();
+    expect(() =>
+      MusicConceptSchema.parse({ ...validConcept, bpm: 30 }),
+    ).toThrow();
   });
 
   it('throws when bpm is above max (250)', () => {
-    expect(() => MusicConceptSchema.parse({ ...validConcept, bpm: 300 })).toThrow();
+    expect(() =>
+      MusicConceptSchema.parse({ ...validConcept, bpm: 300 }),
+    ).toThrow();
   });
 
   it('accepts bpm at boundary values (40 and 250)', () => {
-    expect(() => MusicConceptSchema.parse({ ...validConcept, bpm: 40 })).not.toThrow();
-    expect(() => MusicConceptSchema.parse({ ...validConcept, bpm: 250 })).not.toThrow();
+    expect(() =>
+      MusicConceptSchema.parse({ ...validConcept, bpm: 40 }),
+    ).not.toThrow();
+    expect(() =>
+      MusicConceptSchema.parse({ ...validConcept, bpm: 250 }),
+    ).not.toThrow();
   });
 
   it('throws when bpm is not an integer', () => {
-    expect(() => MusicConceptSchema.parse({ ...validConcept, bpm: 120.5 })).toThrow();
+    expect(() =>
+      MusicConceptSchema.parse({ ...validConcept, bpm: 120.5 }),
+    ).toThrow();
   });
 
   it('throws when required fields are missing', () => {

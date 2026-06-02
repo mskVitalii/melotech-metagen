@@ -16,7 +16,9 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 1: Core Backend Infrastructure** - NestJS foundation, Prisma schema, LLM integration, Redis caching and rate limiting, Railway deployment config
 - [x] **Phase 2: Generation Pipeline** - MusicConcept generation, platform processors (Spotify/TikTok/YouTube), GenerationService fan-out, persistence
 - [ ] **Phase 3: History & Query Layer** - GET /history endpoint with pagination and platform filter
+- [x] **Phase 3: History & Query Layer** - GET /history endpoint with pagination and platform filter
 - [ ] **Phase 4: Frontend** - Next.js App Router UI: prompt form, platform selector, comparison view, history view
+- [x] **Phase 4: Frontend** - Next.js App Router UI: prompt form, platform selector, comparison view, history view
 
 ## Phase Details
 
@@ -28,11 +30,11 @@ Decimal phases appear between their surrounding integers in numeric order.
 **Requirements**: API-04, PIPE-02, RATE-01, RATE-02
 **Success Criteria** (what must be TRUE):
 
-  1. A POST /generate request that exceeds 3/minute per IP receives HTTP 429 with a Retry-After header; requests within the limit pass through
-  2. The `LLMProvider` abstraction is in place: `OpenAIProvider.generateStructured<T>()` produces a valid `MusicConcept` JSON object conforming to the Zod schema — refusals return 400, not 500
-  3. Redis is connected; rate limit counters survive a server restart
-  4. Prisma migrations run at deploy time; the `generation_requests` and `generation_results` tables exist in the Railway PostgreSQL instance
-  5. The NestJS app boots on Railway with correct `trust proxy` config so `X-Forwarded-For` yields the real client IP
+1. A POST /generate request that exceeds 3/minute per IP receives HTTP 429 with a Retry-After header; requests within the limit pass through
+2. The `LLMProvider` abstraction is in place: `OpenAIProvider.generateStructured<T>()` produces a valid `MusicConcept` JSON object conforming to the Zod schema — refusals return 400, not 500
+3. Redis is connected; rate limit counters survive a server restart
+4. Prisma migrations run at deploy time; the `generation_requests` and `generation_results` tables exist in the Railway PostgreSQL instance
+5. The NestJS app boots on Railway with correct `trust proxy` config so `X-Forwarded-For` yields the real client IP
 
 **Plans**: 3 plans
 Plans:
@@ -40,7 +42,7 @@ Plans:
 
 - [x] 01-01-PLAN.md — Walking Skeleton: NestJS scaffold, Prisma 7 schema + migration, /health, Railway config (boot, migrate deploy, trust proxy)
 
-**Wave 2** *(blocked on Wave 1 completion)*
+**Wave 2** _(blocked on Wave 1 completion)_
 
 - [x] 01-02-PLAN.md — LLMProvider abstraction + OpenAIProvider (structured output, refusal guard, timeout) + MusicConcept schema
 - [x] 01-03-PLAN.md — Dual-store Redis CacheModule + Redis-backed ThrottlerModule (proxy-aware) + custom 429 filter
@@ -53,11 +55,11 @@ Plans:
 **Requirements**: API-01, PIPE-01, PIPE-03, PIPE-04, PIPE-05, PROC-01, PROC-02, PROC-03, PROC-04, PROC-05, CACHE-01, CACHE-02, CACHE-03, PERSIST-01, PERSIST-02
 **Success Criteria** (what must be TRUE):
 
-  1. POST /generate with `{ prompt, targetPlatforms: ["spotify","tiktok","youtube"] }` returns `{ requestId, results }` with correctly shaped outputs for each platform
-  2. Submitting the same prompt + platforms a second time returns immediately from Redis cache without calling the LLM
-  3. When one platform processor throws, the response still includes results for all other platforms; the failed platform's result carries `"fallback": true`
-  4. Each generation request is stored in `generation_requests`; each platform result is a separate row in `generation_results`
-  5. `PlatformRegistry` resolves processors by name; a new platform can be added by registering one new class — no changes to `GenerationService` or existing processors
+1. POST /generate with `{ prompt, targetPlatforms: ["spotify","tiktok","youtube"] }` returns `{ requestId, results }` with correctly shaped outputs for each platform
+2. Submitting the same prompt + platforms a second time returns immediately from Redis cache without calling the LLM
+3. When one platform processor throws, the response still includes results for all other platforms; the failed platform's result carries `"fallback": true`
+4. Each generation request is stored in `generation_requests`; each platform result is a separate row in `generation_results`
+5. `PlatformRegistry` resolves processors by name; a new platform can be added by registering one new class — no changes to `GenerationService` or existing processors
 
 **Plans**: 2 plans
 
@@ -66,7 +68,7 @@ Plans:
 
 - [x] 02-01-PLAN.md — PlatformProcessor interface + PLATFORM_PROCESSOR token, per-platform output types, Spotify/TikTok/YouTube processors with buildFallback, PlatformRegistry (multi-provider) + unit tests
 
-**Wave 2** *(blocked on Wave 1 completion)*
+**Wave 2** _(blocked on Wave 1 completion)_
 
 - [x] 02-02-PLAN.md — GenerateRequestDto, PersistenceService (two-table $transaction), GenerationService orchestration (cache → LLM → fan-out → fallback → persist → cache write), GenerationController, GenerationModule + AppModule wiring
 
@@ -78,9 +80,9 @@ Plans:
 **Requirements**: API-02, API-03, PERSIST-03
 **Success Criteria** (what must be TRUE):
 
-  1. GET /history returns a paginated list of previous generation requests with their platform results in a single query (no N+1)
-  2. GET /history?platform=tiktok returns only records that include a TikTok result
-  3. Pagination parameters (page, limit) control the result window; response includes total count for client-side paging
+1. GET /history returns a paginated list of previous generation requests with their platform results in a single query (no N+1)
+2. GET /history?platform=tiktok returns only records that include a TikTok result
+3. Pagination parameters (page, limit) control the result window; response includes total count for client-side paging
 
 **Plans**: TBD
 
@@ -96,10 +98,10 @@ Plans:
 **Requirements**: UI-01, UI-02, UI-03, UI-04, UI-05, UI-06, UI-07, UI-08, DOC-01
 **Success Criteria** (what must be TRUE):
 
-  1. User can enter a prompt, select one or more platforms, click Generate, and see a loading state followed by a side-by-side comparison view of platform outputs
-  2. User can navigate to the History page, see a paginated list of past generations, and filter it by platform
-  3. User can click a history entry and view its full platform output details
-  4. CLAUDE.md exists and documents AI tool usage, AI-generated parts, manually reviewed parts, and AI's role in the project
+1. User can enter a prompt, select one or more platforms, click Generate, and see a loading state followed by a side-by-side comparison view of platform outputs
+2. User can navigate to the History page, see a paginated list of past generations, and filter it by platform
+3. User can click a history entry and view its full platform output details
+4. CLAUDE.md exists and documents AI tool usage, AI-generated parts, manually reviewed parts, and AI's role in the project
 
 **Plans**: TBD
 
@@ -115,9 +117,9 @@ Plans:
 **Execution Order:**
 Phases execute in numeric order: 1 → 2 → 3 → 4
 
-| Phase | Plans Complete | Status | Completed |
-|-------|----------------|--------|-----------|
-| 1. Core Backend Infrastructure | 3/3 | Complete    | 2026-06-02 |
-| 2. Generation Pipeline | 2/2 | Complete    | 2026-06-02 |
-| 3. History & Query Layer | 0/1 | Not started | - |
-| 4. Frontend | 0/2 | Not started | - |
+| Phase                          | Plans Complete | Status      | Completed  |
+| ------------------------------ | -------------- | ----------- | ---------- |
+| 1. Core Backend Infrastructure | 3/3            | Complete    | 2026-06-02 |
+| 2. Generation Pipeline         | 2/2            | Complete    | 2026-06-02 |
+| 3. History & Query Layer       | 0/1            | Not started | -          |
+| 4. Frontend                    | 0/2            | Not started | -          |

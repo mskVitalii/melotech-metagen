@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import type { MusicConcept } from '../types/music-concept.schema.js';
-import type { PlatformProcessor } from './platform-processor.interface.js';
 import type { TikTokOutput } from '../types/platform-result.types.js';
+import type { PlatformProcessor } from './platform-processor.interface.js';
 
 // D-05: Pure transform of MusicConcept — no LLM call, no I/O (PIPE-02)
 @Injectable()
@@ -18,11 +18,11 @@ export class TikTokProcessor implements PlatformProcessor {
     return [this.slug(concept.genre), this.slug(concept.mood), '#music'];
   }
 
-  async generate(concept: MusicConcept): Promise<TikTokOutput> {
-    return {
+  generate(concept: MusicConcept): Promise<TikTokOutput> {
+    return Promise.resolve({
       hook: concept.description,
       hashtags: this.buildHashtags(concept),
-    };
+    });
   }
 
   // D-07: Instance method guaranteed never to throw

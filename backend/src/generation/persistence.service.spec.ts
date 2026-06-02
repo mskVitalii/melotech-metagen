@@ -14,7 +14,9 @@ describe('PersistenceService', () => {
 
   beforeEach(async () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    txRequestCreate = jest.fn<() => Promise<any>>().mockResolvedValue({ id: 'req_1' });
+    txRequestCreate = jest
+      .fn<() => Promise<any>>()
+      .mockResolvedValue({ id: 'req_1' });
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     txResultCreate = jest.fn<() => Promise<any>>().mockResolvedValue({});
 
@@ -25,9 +27,11 @@ describe('PersistenceService', () => {
 
     prisma = {
       // D-15: $transaction invokes the callback with txMock
-      $transaction: jest.fn().mockImplementation((cb: unknown) =>
-        (cb as (tx: typeof txMock) => Promise<unknown>)(txMock)
-      ),
+      $transaction: jest
+        .fn()
+        .mockImplementation((cb: unknown) =>
+          (cb as (tx: typeof txMock) => Promise<unknown>)(txMock),
+        ),
     };
 
     const module = await Test.createTestingModule({
@@ -46,28 +50,58 @@ describe('PersistenceService', () => {
 
   it('should call $transaction once', async () => {
     await service.persist('test prompt', {
-      spotify: { title: 'Test', genre: 'pop', mood: 'happy', bpm: 120, instruments: ['guitar'], description: 'A song' },
+      spotify: {
+        title: 'Test',
+        genre: 'pop',
+        mood: 'happy',
+        bpm: 120,
+        instruments: ['guitar'],
+        description: 'A song',
+      },
     });
     expect(prisma.$transaction).toHaveBeenCalledTimes(1);
   });
 
   it('should create one GenerationRequest with the prompt', async () => {
     await service.persist('test prompt', {
-      spotify: { title: 'Test', genre: 'pop', mood: 'happy', bpm: 120, instruments: ['guitar'], description: 'A song' },
+      spotify: {
+        title: 'Test',
+        genre: 'pop',
+        mood: 'happy',
+        bpm: 120,
+        instruments: ['guitar'],
+        description: 'A song',
+      },
     });
     expect(txRequestCreate).toHaveBeenCalledTimes(1);
-    expect(txRequestCreate).toHaveBeenCalledWith({ data: { prompt: 'test prompt' } });
+    expect(txRequestCreate).toHaveBeenCalledWith({
+      data: { prompt: 'test prompt' },
+    });
   });
 
   it('should create one GenerationResult per platform', async () => {
     const results = {
-      spotify: { title: 'Test', genre: 'pop', mood: 'happy', bpm: 120, instruments: ['guitar'], description: 'A song' },
-      tiktok: { hook: 'This is a hook', hashtags: ['#pop', '#happy', '#music'] },
+      spotify: {
+        title: 'Test',
+        genre: 'pop',
+        mood: 'happy',
+        bpm: 120,
+        instruments: ['guitar'],
+        description: 'A song',
+      },
+      tiktok: {
+        hook: 'This is a hook',
+        hashtags: ['#pop', '#happy', '#music'],
+      },
     };
     await service.persist('test prompt', results);
     expect(txResultCreate).toHaveBeenCalledTimes(2);
     expect(txResultCreate).toHaveBeenCalledWith({
-      data: { requestId: 'req_1', platform: 'spotify', payload: results.spotify },
+      data: {
+        requestId: 'req_1',
+        platform: 'spotify',
+        payload: results.spotify,
+      },
     });
     expect(txResultCreate).toHaveBeenCalledWith({
       data: { requestId: 'req_1', platform: 'tiktok', payload: results.tiktok },

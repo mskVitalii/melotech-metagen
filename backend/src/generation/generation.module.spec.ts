@@ -66,13 +66,18 @@ describe('GenerationModule', () => {
     const processors = registry.getProcessors(['spotify', 'tiktok', 'youtube']);
 
     expect(processors).toHaveLength(3);
-    expect(processors.map(p => p.platform).sort()).toEqual(['spotify', 'tiktok', 'youtube']);
+    expect(processors.map((p) => p.platform).sort()).toEqual([
+      'spotify',
+      'tiktok',
+      'youtube',
+    ]);
   });
 
   it('GenerationModule has 3 PLATFORM_PROCESSOR multi-provider entries', () => {
     // Structural verification that the module wiring has exactly 3 multi: true entries
     // (catches accidental omission of a processor from the multi-provider list)
-    const { providers } = Reflect.getMetadata('imports:metadata', GenerationModule) ?? {};
+    const { providers } =
+      Reflect.getMetadata('imports:metadata', GenerationModule) ?? {};
     // Use module decorator metadata to count multi-provider entries
     const moduleMetadata = Reflect.getMetadata('__module__', GenerationModule);
     void moduleMetadata; // structural check done via grep in verification step

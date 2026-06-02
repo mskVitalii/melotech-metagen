@@ -16,7 +16,9 @@ describe('Throttler e2e (POST /rate-probe)', () => {
 
     // Mirror main.ts setup
     app.getHttpAdapter().getInstance().set('trust proxy', 1);
-    app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
+    app.useGlobalPipes(
+      new ValidationPipe({ whitelist: true, transform: true }),
+    );
     app.useGlobalFilters(new ThrottlerExceptionFilter());
 
     await app.init();
