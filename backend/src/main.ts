@@ -1,6 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { AppModule } from './app.module';
+import { ThrottlerExceptionFilter } from './throttler/throttler-exception.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -16,6 +17,9 @@ async function bootstrap() {
     methods: ['GET', 'POST'],
     allowedHeaders: ['Content-Type'],
   });
+
+  // D-18: Custom filter for exact 429 body + Retry-After header (must be before listen)
+  app.useGlobalFilters(new ThrottlerExceptionFilter());
 
   // Global validation pipe for all DTOs
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
