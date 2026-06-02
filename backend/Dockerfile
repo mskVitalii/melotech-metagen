@@ -18,9 +18,9 @@ RUN npx prisma generate && npm run build
 FROM node:22-alpine AS prod
 WORKDIR /app
 COPY package*.json ./
+COPY prisma ./prisma
+COPY prisma.config.ts ./
 RUN npm ci --omit=dev
 COPY --from=build /app/dist ./dist
 COPY --from=build /app/src/generated ./src/generated
-COPY prisma ./prisma
-COPY prisma.config.ts ./
 CMD ["sh", "-c", "npx prisma migrate deploy && node dist/src/main.js"]
