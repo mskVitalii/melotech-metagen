@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: None — Plan 01-02 complete; continuing to Plan 01-03
-last_updated: "2026-06-02T17:45:00Z"
-last_activity: 2026-06-02 -- Plan 01-02 complete (LLMProvider + OpenAIProvider + MusicConceptSchema); 2 tasks, 4 commits
+stopped_at: Phase 01 complete — all 3 plans done; next is Phase 02 (Generation Pipeline)
+last_updated: "2026-06-02T18:30:00Z"
+last_activity: 2026-06-02 -- Plan 01-03 complete (ThrottlerModule + ThrottlerExceptionFilter + CacheModule + RateProbeController); 2 tasks, 3 commits
 progress:
   total_phases: 4
-  completed_phases: 0
+  completed_phases: 1
   total_plans: 3
-  completed_plans: 1
-  percent: 33
+  completed_plans: 3
+  percent: 100
 ---
 
 # Project State
@@ -21,35 +21,35 @@ progress:
 See: .planning/PROJECT.md (updated 2026-06-02)
 
 **Core value:** Given a single music prompt, instantly generate all platform-optimized content needed to distribute a track
-**Current focus:** Phase 01 — core-backend-infrastructure, Plan 01-03
+**Current focus:** Phase 01 — COMPLETE; ready for Phase 02 (Generation Pipeline)
 
 ## Current Position
 
-Phase: 01 (core-backend-infrastructure) — EXECUTING
-Plan: 2 of 3 (01-02 complete)
-Status: EXECUTING — Plan 01-02 done; next is 01-03 (Redis CacheModule + ThrottlerModule)
-Last activity: 2026-06-02 -- Plan 01-02 complete: LLMProvider abstract class, OpenAIProvider (structured output + refusal guard), MusicConceptSchema, LLMModule, wired into AppModule
+Phase: 01 (core-backend-infrastructure) — COMPLETE
+Plan: 3 of 3 (01-03 complete — all Phase 1 plans done)
+Status: PHASE COMPLETE — ready to start Phase 02 (Generation Pipeline)
+Last activity: 2026-06-02 -- Plan 01-03 complete: Redis-backed ThrottlerModule (3/60s/IP, proxy-aware), ThrottlerExceptionFilter (exact D-18 429 body + Retry-After header), dual-store CacheModule (L1 memory + L2 Redis, 1h TTL), RateProbeController (POST /rate-probe)
 
-Progress: [███░░░░░░░] 33% (1/3 plans complete in Phase 1)
+Progress: [██████████] 100% (3/3 plans complete in Phase 1)
 
 ## Performance Metrics
 
 **Velocity:**
 
-- Total plans completed: 1
-- Average duration: ~50 minutes
-- Total execution time: ~50 minutes (01-02 all tasks)
+- Total plans completed: 3 (all Phase 1)
+- Average duration: ~40 minutes
+- Total execution time: ~120 minutes (01-01 ~40min, 01-02 ~50min, 01-03 ~30min)
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| 01-core-backend-infrastructure | 1/3 | ~50 min | ~50 min |
+| 01-core-backend-infrastructure | 3/3 | ~120 min | ~40 min |
 
 **Recent Trend:**
 
-- Last 5 plans: 01-02 (50 min)
-- Trend: establishing baseline
+- Last 5 plans: 01-01 (~40min), 01-02 (~50min), 01-03 (~30min)
+- Trend: accelerating as infrastructure solidifies
 
 *Updated after each plan completion*
 
@@ -67,10 +67,14 @@ Recent decisions affecting current work:
 - Plan 01-01: Prisma 7 breaking change — datasource url moved from schema.prisma to prisma.config.ts
 - Plan 01-02: OPENAI_MODEL default is 'gpt-5.4' per project critical_context (overrides D-06 which said gpt-4o-2024-08-06)
 - Plan 01-02: zodResponseFormat + chat.completions.parse confirmed as only acceptable pattern (D-05 enforced)
+- Plan 01-03: nestjs-throttler-storage-redis@0.5.1 requires --legacy-peer-deps (peer dep constraint ^7-10, NestJS 11 in use; API-compatible)
+- Plan 01-03: D-17 getTracker inline in forRoot options — no class extension; D-18 exact body requires ThrottlerExceptionFilter
+- Plan 01-03: Two separate Redis logical clients — ioredis (throttler) vs @keyv/redis (cache) — no shared connection (D-12)
 
 ### Pending Todos
 
-- Continue to Plan 01-03: Dual-store Redis CacheModule + Redis-backed ThrottlerModule + custom 429 filter
+- Start Phase 02: PlatformProcessor interface, PlatformRegistry, SpotifyProcessor, TikTokProcessor, YouTubeProcessor (02-01)
+- Then: GenerationService (cache → LLM → fan-out → persist → cache write) + GenerationController (02-02)
 
 ### Blockers/Concerns
 
@@ -86,6 +90,6 @@ Recent decisions affecting current work:
 
 ## Session Continuity
 
-Last session: 2026-06-02T17:45:00Z
-Stopped at: Plan 01-02 complete
-Resume file: .planning/phases/01-core-backend-infrastructure/01-03-PLAN.md
+Last session: 2026-06-02T18:30:00Z
+Stopped at: Phase 01 complete (all 3 plans done)
+Resume file: .planning/phases/02-generation-pipeline/ (next phase)

@@ -13,7 +13,7 @@ The pipeline is built bottom-up: backend infrastructure and LLM integration firs
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [ ] **Phase 1: Core Backend Infrastructure** - NestJS foundation, Prisma schema, LLM integration, Redis caching and rate limiting, Railway deployment config
+- [x] **Phase 1: Core Backend Infrastructure** - NestJS foundation, Prisma schema, LLM integration, Redis caching and rate limiting, Railway deployment config
 - [ ] **Phase 2: Generation Pipeline** - MusicConcept generation, platform processors (Spotify/TikTok/YouTube), GenerationService fan-out, persistence
 - [ ] **Phase 3: History & Query Layer** - GET /history endpoint with pagination and platform filter
 - [ ] **Phase 4: Frontend** - Next.js App Router UI: prompt form, platform selector, comparison view, history view
@@ -43,7 +43,7 @@ Plans:
 **Wave 2** *(blocked on Wave 1 completion)*
 
 - [x] 01-02-PLAN.md — LLMProvider abstraction + OpenAIProvider (structured output, refusal guard, timeout) + MusicConcept schema
-- [ ] 01-03-PLAN.md — Dual-store Redis CacheModule + Redis-backed ThrottlerModule (proxy-aware) + custom 429 filter
+- [x] 01-03-PLAN.md — Dual-store Redis CacheModule + Redis-backed ThrottlerModule (proxy-aware) + custom 429 filter
 
 ### Phase 2: Generation Pipeline
 
@@ -113,7 +113,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Core Backend Infrastructure | 1/3 | In Progress — 01-01 and 01-02 complete; 01-03 next | - |
+| 1. Core Backend Infrastructure | 3/3 | Complete — all plans done (01-01, 01-02, 01-03) | 2026-06-02 |
 | 2. Generation Pipeline | 0/2 | Not started | - |
 | 3. History & Query Layer | 0/1 | Not started | - |
 | 4. Frontend | 0/2 | Not started | - |
