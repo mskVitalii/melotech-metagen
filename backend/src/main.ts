@@ -1,7 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
-import { AppModule } from './app.module';
-import { ThrottlerExceptionFilter } from './throttler/throttler-exception.filter';
+import { AppModule } from './app.module.js';
+import { ThrottlerExceptionFilter } from './throttler/throttler-exception.filter.js';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);

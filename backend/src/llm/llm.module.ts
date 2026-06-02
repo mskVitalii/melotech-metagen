@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
-import { LLMProvider } from './llm-provider.abstract';
-import { OpenAIProvider } from './openai.provider';
+import { LLMProvider } from './llm-provider.abstract.js';
+import { OpenAIProvider } from './openai.provider.js';
 
 @Module({
   providers: [

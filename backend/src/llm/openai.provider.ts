@@ -3,7 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import OpenAI from 'openai';
 import { zodResponseFormat } from 'openai/helpers/zod';
 import { ZodSchema } from 'zod';
-import { LLMProvider } from './llm-provider.abstract';
+import { LLMProvider } from './llm-provider.abstract.js';
 
 @Injectable()
 export class OpenAIProvider extends LLMProvider {

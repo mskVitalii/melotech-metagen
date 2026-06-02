@@ -2,13 +2,13 @@ import { Module } from '@nestjs/common';
 import { APP_GUARD } from '@nestjs/core';
 import { ConfigModule } from '@nestjs/config';
 import { ThrottlerGuard } from '@nestjs/throttler';
-import { validate } from './config/env.validation';
-import { PrismaModule } from './prisma/prisma.module';
-import { HealthController } from './health/health.controller';
-import { RateProbeController } from './health/rate-probe.controller';
-import { LLMModule } from './llm/llm.module';
-import { ThrottlerModule } from './throttler/throttler.module';
-import { CacheModule } from './cache/cache.module';
+import { validate } from './config/env.validation.js';
+import { PrismaModule } from './prisma/prisma.module.js';
+import { HealthController } from './health/health.controller.js';
+import { RateProbeController } from './health/rate-probe.controller.js';
+import { LLMModule } from './llm/llm.module.js';
+import { ThrottlerModule } from './throttler/throttler.module.js';
+import { CacheModule } from './cache/cache.module.js';
 
 @Module({
   imports: [
