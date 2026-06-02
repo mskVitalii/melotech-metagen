@@ -1,11 +1,11 @@
 import { jest } from '@jest/globals';
-import { Test } from '@nestjs/testing';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Global, Module } from '@nestjs/common';
-import { GenerationModule } from './generation.module.js';
+import { Test } from '@nestjs/testing';
 import { LLMProvider } from '../llm/llm-provider.abstract.js';
 import { OpenAIProvider } from '../llm/openai.provider.js';
 import { PrismaService } from '../prisma/prisma.service.js';
+import { GenerationModule } from './generation.module.js';
 import { PlatformRegistry } from './processors/platform-registry.js';
 import { SpotifyProcessor } from './processors/spotify.processor.js';
 import { TikTokProcessor } from './processors/tiktok.processor.js';

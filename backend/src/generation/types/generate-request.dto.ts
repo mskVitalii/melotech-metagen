@@ -1,11 +1,11 @@
 import { Transform } from 'class-transformer';
 import {
-    ArrayNotEmpty,
-    IsArray,
-    IsIn,
-    IsNotEmpty,
-    IsString,
-    MaxLength,
+  ArrayNotEmpty,
+  IsArray,
+  IsIn,
+  IsNotEmpty,
+  IsString,
+  MaxLength,
 } from 'class-validator';
 
 // D-18: GenerateRequestDto with class-validator decorators

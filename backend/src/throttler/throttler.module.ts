@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ThrottlerModule as NestThrottlerModule } from '@nestjs/throttler';
 import { Redis } from 'ioredis';
-import { ThrottlerStorageRedisService } from 'nestjs-throttler-storage-redis';
+import { ThrottlerStorageRedisService } from '@nest-lab/throttler-storage-redis';
 
 // D-12: Isolated ioredis client for throttler (separate from @keyv/redis cache client)
 // D-13: Uses REDIS_URL env var
