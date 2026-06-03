@@ -22,4 +22,6 @@ COPY prisma ./prisma
 COPY prisma.config.ts ./
 RUN npm ci --omit=dev --ignore-scripts && npx prisma generate
 COPY --from=build /app/dist ./dist
-CMD ["sh", "-c", "npx prisma migrate deploy && node dist/src/main.js 2>&1"]
+COPY start.sh ./
+RUN chmod +x start.sh
+CMD ["./start.sh"]
