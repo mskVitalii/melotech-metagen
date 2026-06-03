@@ -7,7 +7,7 @@ export async function generateContent(
   const res = await fetch('/api/generate', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ prompt, target_platforms: targetPlatforms }),
+    body: JSON.stringify({ prompt, targetPlatforms }),
   });
 
   if (!res.ok) {
