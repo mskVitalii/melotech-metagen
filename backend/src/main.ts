@@ -3,17 +3,6 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module.js';
 import { ThrottlerExceptionFilter } from './throttler/throttler-exception.filter.js';
 
-process.on('uncaughtException', (err) => {
-  process.stderr.write(
-    `[FATAL] uncaughtException: ${err.stack ?? err.message}\n`,
-  );
-  process.exit(1);
-});
-process.on('unhandledRejection', (reason) => {
-  process.stderr.write(`[FATAL] unhandledRejection: ${String(reason)}\n`);
-  process.exit(1);
-});
-
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
