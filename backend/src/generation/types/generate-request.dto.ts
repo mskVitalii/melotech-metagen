@@ -1,10 +1,10 @@
 import {
-    ArrayNotEmpty,
-    IsArray,
-    IsIn,
-    IsNotEmpty,
-    IsString,
-    MaxLength,
+  ArrayNotEmpty,
+  IsArray,
+  IsIn,
+  IsNotEmpty,
+  IsString,
+  MaxLength,
 } from 'class-validator';
 
 export class GenerateRequestDto {
